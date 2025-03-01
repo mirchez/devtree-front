@@ -5,8 +5,10 @@ import { LoginForm } from "../types/index";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import api from "../config/axios";
+import { useNavigate } from "react-router-dom";
 
 const loginView = () => {
+  const navigate = useNavigate();
   const initialValues = {
     email: "",
     password: "",
@@ -24,7 +26,7 @@ const loginView = () => {
     try {
       const { data } = await api.post("/auth/login", formData);
       localStorage.setItem("token", data);
-      toast.success(data.msg);
+      navigate("/admin");
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error);

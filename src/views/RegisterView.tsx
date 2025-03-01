@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
@@ -7,6 +7,8 @@ import ErrorMessage from "../components/ErrorMessage";
 import api from "../config/axios";
 
 const RegisterView = () => {
+  const navigate = useNavigate();
+
   const initialValues = {
     name: "",
     email: "",
@@ -28,8 +30,9 @@ const RegisterView = () => {
   const handleRegister = async (formData: RegisterForm) => {
     try {
       const { data } = await api.post(`/auth/register`, formData);
-      toast.success(data.msg);
       reset();
+      toast.success(data.msg);
+      navigate("/auth/login");
     } catch (error) {
       if (isAxiosError(error) && error.response) {
         toast.error(error.response.data.error);
