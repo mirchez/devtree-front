@@ -1,13 +1,58 @@
 import { Toaster } from "sonner";
-import { User } from "../types";
+import { SocialNetwork, User } from "../types";
 import NavigationTabs from "./NavigationTabs";
 import { Link, Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import DevtreeLink from "./DevtreeLink";
+import { DndContext, DragEndEvent, closestCenter } from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
+import { useQueryClient } from "@tanstack/react-query";
 
 type DevTreeProps = {
   data: User;
 };
 
 const DevTree = ({ data }: DevTreeProps) => {
+  const [enableLinks, setEnableLinks] = useState<SocialNetwork[]>(
+    JSON.parse(data.links).filter((item: SocialNetwork) => item.enabled)
+  );
+
+  useEffect(() => {
+    setEnableLinks(
+      JSON.parse(data.links).filter((item: SocialNetwork) => item.enabled)
+    );
+  }, [data]);
+
+  const queryClient = useQueryClient();
+  const handleDragEnd = (e: DragEndEvent) => {
+    const { active, over } = e;
+    if (over && over.id) {
+      const prevIdx = enableLinks.findIndex((link) => {
+        return link.id === active.id;
+      });
+      const newIdx = enableLinks.findIndex((link) => {
+        return link.id === over.id;
+      });
+
+      const order = arrayMove(enableLinks, prevIdx, newIdx);
+      setEnableLinks(order);
+      const disableLinks: SocialNetwork[] = JSON.parse(data.links).filter(
+        (item: SocialNetwork) => !item.enabled
+      );
+      const links = order.concat(disableLinks);
+      queryClient.setQueryData(["user"], (prevData: User) => {
+        return {
+          ...prevData,
+          links: JSON.stringify(links),
+        };
+      });
+    }
+  };
+
   return (
     <>
       <header className="bg-slate-800 py-5">
@@ -31,7 +76,7 @@ const DevTree = ({ data }: DevTreeProps) => {
           <div className="flex justify-end">
             <Link
               className="font-bold text-right text-slate-800 text-2xl"
-              to={""}
+              to={`/${data.handle}`}
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -56,6 +101,22 @@ const DevTree = ({ data }: DevTreeProps) => {
               <p className="text-center text-white text-lg font-black">
                 {data.description}
               </p>
+
+              <DndContext
+                collisionDetection={closestCenter}
+                onDragEnd={handleDragEnd}
+              >
+                <div className="mt-20 flex flex-col gap-5">
+                  <SortableContext
+                    items={enableLinks}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {enableLinks.map((link) => (
+                      <DevtreeLink key={link.name} link={link} />
+                    ))}
+                  </SortableContext>
+                </div>
+              </DndContext>
             </div>
           </div>
         </main>

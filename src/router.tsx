@@ -5,6 +5,7 @@ import AuthLayout from "./layouts/AuthLayout";
 import AppLayout from "./layouts/AppLayout";
 import LinkTreeView from "./views/LinkTreeView";
 import ProfileView from "./views/ProfileView";
+import HandleView from "./views/HandleView";
 
 const Router = () => {
   return (
@@ -21,6 +22,9 @@ const Router = () => {
           inherit the father parth
           <Route path="profile" element={<ProfileView />} /> //no need to add
           "/" to anidate the bcz if we put "/profile" is an absolute path
+        </Route>
+        <Route path="/:handle" element={<AuthLayout />}>
+          <Route element={<HandleView />} index={true} />
         </Route>
       </Routes>
     </BrowserRouter>
