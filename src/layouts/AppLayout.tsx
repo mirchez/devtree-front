@@ -10,7 +10,6 @@ export default function AppLayout() {
     retry: 1,
     refetchOnWindowFocus: false,
   });
-
   if (isLoading) return "Loading...";
   if (isError) return <Navigate to={"/auth/login"} />;
   if (data) return <DevTree data={data} />;

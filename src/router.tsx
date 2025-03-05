@@ -6,6 +6,8 @@ import AppLayout from "./layouts/AppLayout";
 import LinkTreeView from "./views/LinkTreeView";
 import ProfileView from "./views/ProfileView";
 import HandleView from "./views/HandleView";
+import NotFoundView from "./views/NotFoundView";
+import HomeView from "./views/HomeView";
 
 const Router = () => {
   return (
@@ -25,6 +27,10 @@ const Router = () => {
         </Route>
         <Route path="/:handle" element={<AuthLayout />}>
           <Route element={<HandleView />} index={true} />
+        </Route>
+        <Route path="/" element={<HomeView />} />
+        <Route path="/404" element={<AuthLayout />}>
+          <Route index={true} element={<NotFoundView />} />
         </Route>
       </Routes>
     </BrowserRouter>

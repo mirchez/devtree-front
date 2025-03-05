@@ -1,6 +1,6 @@
 import { useForm } from "react-hook-form";
 import ErrorMessage from "../components/ErrorMessage";
-import { useQueryClient, useMutation } from "@tanstack/react-query"; //very nice
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { ProfileForm, User } from "../types";
 import { updateProfile, uploadImage } from "../api/DevTreeApi";
 import { toast } from "sonner";
@@ -8,7 +8,7 @@ import { toast } from "sonner";
 export default function ProfileView() {
   const queryClient = useQueryClient();
   const data: User = queryClient.getQueryData(["user"])!;
-  //when the page loads it fetchss
+
   const {
     register,
     handleSubmit,
@@ -27,6 +27,9 @@ export default function ProfileView() {
     },
     onSuccess: (data) => {
       toast.success(data);
+      queryClient.invalidateQueries({ queryKey: ["user"] });
+    },
+    onMutate: async () => {
       queryClient.invalidateQueries({ queryKey: ["user"] });
     },
   });
@@ -66,14 +69,14 @@ export default function ProfileView() {
       onSubmit={handleSubmit(handleUserProfileForm)}
     >
       <legend className="text-2xl text-slate-800 text-center">
-        Editar Información
+        Edit Information
       </legend>
       <div className="grid grid-cols-1 gap-2">
         <label htmlFor="handle">Handle:</label>
         <input
           type="text"
           className="border-none bg-slate-100 rounded-lg p-2"
-          placeholder="handle o Nombre de Usuario"
+          placeholder="Handle or Username"
           {...register("handle", {
             required: "Username is required",
           })}
@@ -82,22 +85,21 @@ export default function ProfileView() {
       </div>
 
       <div className="grid grid-cols-1 gap-2">
-        <label htmlFor="description">Descripción:</label>
+        <label htmlFor="description">Description:</label>
         <textarea
           className="border-none bg-slate-100 rounded-lg p-2"
-          placeholder="Tu Descripción"
+          placeholder="Your Description"
           {...register("description", {
             required: "Description is needed",
           })}
         />
-
-        {errors.handle && (
-          <ErrorMessage>{errors.description!.message}</ErrorMessage>
+        {errors.description && (
+          <ErrorMessage>{errors.description.message}</ErrorMessage>
         )}
       </div>
 
       <div className="grid grid-cols-1 gap-2">
-        <label htmlFor="handle">Imagen:</label>
+        <label htmlFor="handle">Image:</label>
         <input
           id="image"
           type="file"
@@ -111,7 +113,7 @@ export default function ProfileView() {
       <input
         type="submit"
         className="bg-cyan-400 p-2 text-lg w-full uppercase text-slate-600 rounded-lg font-bold cursor-pointer"
-        value="Guardar Cambios"
+        value="Save Changes"
       />
     </form>
   );

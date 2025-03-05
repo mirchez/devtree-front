@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
@@ -8,11 +8,11 @@ import api from "../config/axios";
 
 const RegisterView = () => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const initialValues = {
     name: "",
     email: "",
-    handle: "",
+    handle: location.state?.handle || "",
     password: "",
     password_confirmation: "",
   };

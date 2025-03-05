@@ -1,6 +1,6 @@
 import { isAxiosError } from "axios";
 import api from "../config/axios";
-import { User } from "../types";
+import { User, UserHandle } from "../types";
 
 export const getUser = async () => {
   try {
@@ -41,9 +41,20 @@ export const uploadImage = async (file: File) => {
 
 export const getUserByHandle = async (handle: string) => {
   try {
-    const { data } = await api.get<string>(`/${handle}`);
+    const { data } = await api.get<UserHandle>(`/${handle}`);
     return data;
     return;
+  } catch (error) {
+    if (isAxiosError(error) && error.response) {
+      throw new Error(error.response.data.error);
+    }
+  }
+};
+
+export const searchByHandle = async (handle: string) => {
+  try {
+    const { data } = await api.post<string>(`/search`, { handle }); //it is post because we have to sent a handle to compare.
+    return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
       throw new Error(error.response.data.error);
