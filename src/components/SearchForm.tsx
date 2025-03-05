@@ -50,7 +50,7 @@ const SearchForm = () => {
         {mutation.error && (
           <p className="text-center text-red-600 font-black">
             {mutation.error.message}
-            <Link to="/auth/register">Register</Link>
+            <Link to="/auth/register"> Register</Link>
           </p>
         )}
         {mutation.data && (
