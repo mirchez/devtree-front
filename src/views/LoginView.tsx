@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 const loginView = () => {
   const navigate = useNavigate();
   const initialValues = {
-    email: "",
-    password: "",
+    email: "admin@devtree.com",
+    password: "adminpass",
   };
 
   const {
