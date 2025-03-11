@@ -8,6 +8,7 @@ export const getUser = async () => {
     return data;
   } catch (error) {
     if (isAxiosError(error) && error.response) {
+      console.log(error.response);
       throw new Error(error.response.data.error);
     }
   }

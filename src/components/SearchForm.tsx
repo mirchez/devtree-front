@@ -25,7 +25,6 @@ const SearchForm = () => {
 
   const handleSearch = () => {
     const slug = slugify(handle);
-    console.log(slug);
     mutation.mutate(slug);
   };
 
